@@ -1,4 +1,4 @@
-package util;
+package com.ecommerce.util;
 
 import java.util.Scanner;
 

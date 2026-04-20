@@ -1,4 +1,4 @@
-package entity;
+package com.ecommerce.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

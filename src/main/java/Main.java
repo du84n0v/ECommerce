@@ -1,17 +1,21 @@
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.Metadata;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import com.ecommerce.config.SpringConfig;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import com.ecommerce.ui.AuthUI;
 
 public class Main {
     static void main() {
-        StandardServiceRegistry ssr = new StandardServiceRegistryBuilder().configure("hibernate-config.xml").build();
-        Metadata meta = new MetadataSources(ssr).getMetadataBuilder().build();
+//        StandardServiceRegistry ssr = new StandardServiceRegistryBuilder().configure("hibernate-config.xml").build();
+//        Metadata meta = new MetadataSources(ssr).getMetadataBuilder().build();
+//
+//        SessionFactory factory = meta.getSessionFactoryBuilder().build();
+//
+//        factory.close();
 
-        SessionFactory factory = meta.getSessionFactoryBuilder().build();
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
 
+        AuthUI ui = (AuthUI) context.getBean("authUI");
+        ui.run();
 
-        factory.close();
     }
 }

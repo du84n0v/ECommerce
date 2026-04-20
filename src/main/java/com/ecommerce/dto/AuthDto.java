@@ -1,4 +1,4 @@
-package dto;
+package com.ecommerce.dto;
 
 public record AuthDto(
         String name,

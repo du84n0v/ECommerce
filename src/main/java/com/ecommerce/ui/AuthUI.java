@@ -1,16 +1,23 @@
-package ui;
+package com.ecommerce.ui;
 
-import controller.AuthController;
-import dto.AuthDto;
-import entity.Profile;
+import com.ecommerce.controller.AuthController;
+import com.ecommerce.dto.AuthDto;
+import com.ecommerce.entity.Profile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Scanner;
 
 public class AuthUI {
-
+    @Autowired
+    @Qualifier("scannerNum")
     private Scanner scannerNum;
+    @Autowired
+    @Qualifier("scannerStr")
     private Scanner scannerText;
+    @Autowired
     private AuthController controller;
+    @Autowired
     private ProfileUI profileUI;
 
 

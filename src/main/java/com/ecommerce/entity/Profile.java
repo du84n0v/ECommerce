@@ -1,9 +1,6 @@
-package entity;
+package com.ecommerce.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,14 +10,16 @@ import javax.persistence.*;
 @AllArgsConstructor
 
 @Entity
-public class Product {
+public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
     private String name;
     @Column
-    private Double price;
+    private String phone;
     @Column
-    private Integer quantity;
+    private String password;
+    @Column
+    private Double balance;
 }

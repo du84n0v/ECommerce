@@ -1,4 +1,4 @@
-package config;
+package com.ecommerce.config;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -8,11 +8,12 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import ui.ProfileUI;
+import com.ecommerce.ui.AuthUI;
+import com.ecommerce.ui.ProfileUI;
 
 import java.util.Scanner;
 
-
+@ComponentScan(basePackages = "com.ecommerce")
 @Configuration
 public class SpringConfig {
     @Bean(name = "scannerNum")
@@ -36,5 +37,10 @@ public class SpringConfig {
     @Bean
     public ProfileUI profileUI(){
         return new ProfileUI();
+    }
+
+    @Bean
+    public AuthUI authUI(){
+        return new AuthUI();
     }
 }

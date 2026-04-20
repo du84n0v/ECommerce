@@ -1,6 +1,6 @@
-package entity;
+package com.ecommerce.entity;
 
-import enums.OrderStatus;
+import com.ecommerce.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
