@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.username">ecommerce_user</property>
+        <property name="hibernate.connection.password">12345</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:8081/ecommerce_db</property>
+        <property name="hbm2ddl.auto">create</property>
+        <property name="show_sql">true</property>
+
+        <!-- MAPPINGS -->
+        <mapping class="entity.Product"/>
+        <mapping class="entity.Profile"/>
+        <mapping class="entity.Order"/>
+        <mapping class="entity.OrderItem"/>
+
+    </session-factory>
+
+</hibernate-configuration>
