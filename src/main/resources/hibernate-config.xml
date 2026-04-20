@@ -12,8 +12,8 @@
         <!-- MAPPINGS -->
         <mapping class="com.ecommerce.entity.Product"/>
         <mapping class="com.ecommerce.entity.Profile"/>
-        <mapping class="com.ecommerce.entity.Order"/>
-        <mapping class="com.ecommerce.entity.OrderItem"/>
+        <mapping class="com.ecommerce.entity.Orders"/>
+        <mapping class="com.ecommerce.entity.OrdersItem"/>
 
     </session-factory>
 

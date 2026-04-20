@@ -14,7 +14,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "order_item")
-public class OrderItem {
+public class OrdersItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,7 +23,7 @@ public class OrderItem {
     private Integer orderId;
     @ManyToOne
     @JoinColumn(name = "order_id", insertable = false, updatable = false)
-    private Order order;
+    private Orders orders;
 
     @Column(name = "product_id")
     private Integer productId;

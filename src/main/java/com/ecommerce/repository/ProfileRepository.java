@@ -50,4 +50,57 @@ public class ProfileRepository {
             return (profiles.isEmpty() ? null : profiles.getFirst());
         }
     }
+
+    public boolean fillBalance(Integer profileId, double amount) {
+        try(Session session = factory.openSession()){
+            Transaction tt = session.beginTransaction();
+            try{
+                Query query = session.createQuery("UPDATE Profile p SET p.balance = p.balance + :amount WHERE p.id =: profileId");
+                query.setParameter("amount", amount);
+                query.setParameter("profileId", profileId);
+                int result = query.executeUpdate();
+                tt.commit();
+                return result > 0;
+            }
+            catch (Exception ee){
+                tt.rollback();
+                System.out.println(ee.getMessage());
+                return false;
+            }
+        }
+    }
+
+    public Profile getProfileById(Integer profileId) {
+        try(Session session = factory.openSession()){
+            Query<Profile> query = session.createQuery("FROM Profile p WHERE p.id = :profileId", Profile.class);
+            query.setParameter("profileId", profileId);
+            List<Profile> profiles = query.getResultList();
+            return (profiles.isEmpty() ? null : profiles.getFirst());
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
