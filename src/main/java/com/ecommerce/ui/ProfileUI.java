@@ -1,6 +1,8 @@
 package com.ecommerce.ui;
 
 import com.ecommerce.controller.ProfileController;
+import com.ecommerce.dto.OrderDetailDto;
+import com.ecommerce.dto.OrderItemDto;
 import com.ecommerce.entity.Orders;
 import com.ecommerce.entity.Product;
 import com.ecommerce.entity.Profile;
@@ -70,7 +72,7 @@ public class ProfileUI {
             switch (optionsMenu()){
                 case 1-> addCart(profile);
                 case 2 -> showCart(profile);
-//                case 3 -> createOrder(profile);
+                case 3 -> createOrder(profile);
                 case 0 -> {
                     return;
                 }
@@ -118,6 +120,7 @@ public class ProfileUI {
         }
         try{
             profileController.createOrder(cart, profile.getId());
+            cart.clear();
         }
         catch (Exception ee){
             System.out.println(ee.getMessage());
@@ -181,9 +184,20 @@ public class ProfileUI {
     private void showOrderDetails() {
         System.out.print("Enter order ID: ");
         int orderId = scannerNum.nextInt();
-//        List<OrderDetailDto> orderDetail = profileController.getOrderDetailInformation(orderId);
-
-
+        OrderDetailDto orderDetail = profileController.getOrderDetailInformation(orderId);
+        System.out.println("--------------------------------");
+        System.out.println("       " + orderId + " -- ORDER DETAIL       ");
+        System.out.println("--------------------------------");
+        int cnt = 1;
+        for(OrderItemDto oo :orderDetail.getItems()){
+            System.out.println("--------- " + cnt + "-PRODUCT-------");
+            System.out.printf("| %-12s : %-15s |\n", "Name", oo.getProductName());
+            System.out.printf("| %-12s : %-15d |\n", "Quantity", oo.getQuantity());
+            System.out.printf("| %-12s : %-15f |\n", "Price", oo.getPrice());
+            System.out.println("--------------------------------\n");
+        }
+        System.out.printf("| %-12s : %-15s |\n", "Status", orderDetail.getStatus());
+        System.out.printf("| %-12s : %-15f |\n", "Total sum", orderDetail.getTotalAmount());
     }
 
     private void showMyOrders(Profile profile) {
@@ -202,6 +216,41 @@ public class ProfileUI {
             System.out.printf("| %-12s : %-15.2f |\n", "Total Sum", order.getTotalSumma());
             System.out.println("--------------------------------\n");
         }
+
+        action(profile);
+    }
+
+    private void action(Profile profile) {
+        while (true){
+            switch (actionMenu()){
+                case 1 -> buyOrder(profile);
+//                case 2 -> cancelOrder(profile);
+                case 0 -> {
+                    return;
+                }
+            }
+        }
+    }
+
+    private void buyOrder(Profile profile) {
+        System.out.print("Enter Order ID: ");
+        int orderId = scannerNum.nextInt();
+        try{
+            profileController.buyOrder(orderId, profile);
+        }
+        catch (Exception ee){
+            System.out.println(ee.getMessage());
+        }
+    }
+
+    private int actionMenu() {
+        System.out.println("==================================");
+        System.out.println("1. Pay for order");
+        System.out.println("2. Cancel Order");
+        System.out.println("0. Back");
+        System.out.print(">>>> ");
+
+        return scannerNum.nextInt();
     }
 
     public void showMyProfile(Profile profile) {

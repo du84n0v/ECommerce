@@ -18,7 +18,7 @@ public class OrdersItemRepository {
 
     public List<OrdersItem> getItemsByOrderId(int orderId) {
         try(Session session = factory.openSession()){
-            Query<OrdersItem> query = session.createQuery("FROM OrdersItem ot WHERE ot.orderId =:orderId");
+            Query<OrdersItem> query = session.createQuery("FROM OrdersItem ot WHERE ot.orderId =:orderId", OrdersItem.class);
             query.setParameter("orderId", orderId);
             return query.getResultList();
         }

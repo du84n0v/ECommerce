@@ -78,6 +78,26 @@ public class ProfileRepository {
             return (profiles.isEmpty() ? null : profiles.getFirst());
         }
     }
+
+    public int withdrawBalance(Integer profileId, double totalSum) {
+        Transaction tt;
+        try(Session session = factory.openSession()){
+            tt = session.beginTransaction();
+            try{
+                Query query = session.createQuery("UPDATE Profile p SET p.balance = p.balance - :total WHERE p.id = :profileId");
+                query.setParameter("total", totalSum);
+                query.setParameter("profileId", profileId);
+                int upd = query.executeUpdate();
+                tt.commit();
+                return upd;
+            }
+            catch (Exception ee){
+                tt.rollback();
+                System.out.println(ee.getMessage());
+                return 0;
+            }
+        }
+    }
 }
 
 

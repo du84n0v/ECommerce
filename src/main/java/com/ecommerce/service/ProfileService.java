@@ -4,7 +4,7 @@ import com.ecommerce.dto.OrderDetailDto;
 import com.ecommerce.entity.Orders;
 import com.ecommerce.entity.Product;
 import com.ecommerce.entity.Profile;
-import com.ecommerce.exceptions.InsufficientProductQuantity;
+import com.ecommerce.exceptions.InsufficientProductQuantityException;
 import com.ecommerce.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,10 +52,25 @@ public class ProfileService {
         double totalSum = 0d;
         for(Product product :products){
             if(cart.get(product.getId()) > product.getQuantity()){
-                throw new InsufficientProductQuantity("There is not enough product quantity in stock");
+                throw new InsufficientProductQuantityException("There is not enough product quantity in stock");
             }
             totalSum += (cart.get(product.getId()) * product.getPrice());
         }
         ordersService.createOrder(products, cart, totalSum, profileId);
+    }
+
+    public void buyOrder(int orderId, Profile profile) {
+        double totalSum = ordersService.buyOrder(orderId, profile);
+        if(totalSum == -1){
+            System.out.println("Hmm. Something went wrong");
+            return ;
+        }
+
+        if(profileRepository.withdrawBalance(profile.getId(), totalSum) > 0){
+            System.out.println("Successfully paid");
+        }
+        else {
+            System.out.println("Hmm, Something went wrong");
+        }
     }
 }

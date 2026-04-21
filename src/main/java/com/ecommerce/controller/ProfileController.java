@@ -45,4 +45,8 @@ public class ProfileController {
     public void createOrder(Map<Integer, Integer> cart, Integer profileId) {
         profileService.createOrder(cart, profileId);
     }
+
+    public void buyOrder(int orderId, Profile profile) {
+        profileService.buyOrder(orderId, profile);
+    }
 }

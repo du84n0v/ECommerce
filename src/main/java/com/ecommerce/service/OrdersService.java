@@ -5,8 +5,9 @@ import com.ecommerce.dto.OrderItemDto;
 import com.ecommerce.entity.OrdersItem;
 import com.ecommerce.entity.Orders;
 import com.ecommerce.entity.Product;
+import com.ecommerce.entity.Profile;
 import com.ecommerce.enums.OrderStatus;
-import com.ecommerce.exceptions.NotFoundOrdersException;
+import com.ecommerce.exceptions.*;
 import com.ecommerce.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,8 +53,31 @@ public class OrdersService {
         order.setTotalSumma(totalSum);
         order.setStatus(OrderStatus.NEW);
         int orderId = ordersRepository.save(order);
+        if(orderId == 0){
+            System.out.println("Something went wrong");
+            return ;
+        }
         for(Product product :products){
             ordersItemService.createOrderItem(orderId, product.getId(), cart.get(product.getId()), product.getPrice());
         }
+    }
+
+    public double buyOrder(int orderId, Profile profile) {
+        int res = ordersRepository.orderState(orderId, profile.getId());
+        if(res == 0){
+            throw new OrderNotFoundException("Order not found or this order does not belong to this profile");
+        }
+        if(res == 1){
+            throw new OrderAlreadyPaidException("This order already paid");
+        }
+        if(res == 2){
+            throw new OrderAlreadyCancelledException("This order cancelled");
+        }
+        Orders order = ordersRepository.getOrderByOrderId(orderId);
+        if(order.getTotalSumma() > profile.getBalance()){
+            throw new InsufficientBalanceException("Insufficient balance. Please refill balance");
+        }
+
+        return (ordersRepository.updateOrderStatus(orderId, OrderStatus.PAID) ? order.getTotalSumma() : -1d);
     }
 }
