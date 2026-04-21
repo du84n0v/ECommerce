@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -39,5 +40,9 @@ public class ProfileController {
 
     public List<Product> getProductsByIds(Set<Integer> ids) {
         return profileService.getProductsByIds(ids);
+    }
+
+    public void createOrder(Map<Integer, Integer> cart, Integer profileId) {
+        profileService.createOrder(cart, profileId);
     }
 }

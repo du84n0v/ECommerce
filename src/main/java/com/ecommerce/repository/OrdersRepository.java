@@ -3,6 +3,7 @@ package com.ecommerce.repository;
 import com.ecommerce.entity.Orders;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,22 @@ public class OrdersRepository {
             query.setParameter("orderId", orderId);
             List<Orders> result = query.getResultList();
             return (result.isEmpty() ? null : result.getFirst());
+        }
+    }
+
+    public int save(Orders order) {
+        Transaction tt;
+        try(Session session = factory.openSession()){
+            tt = session.beginTransaction();
+            try{
+                Integer orderId = (Integer) session.save(order);
+                tt.commit();
+                return orderId;
+            }
+            catch (Exception ee){
+                tt.rollback();
+                System.out.println(ee.getMessage());
+            }
         }
     }
 }

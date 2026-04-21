@@ -21,4 +21,8 @@ public class ProductService {
     public List<Product> getProductsByIds(Set<Integer> ids) {
         return productRepository.getProductsByIds(ids);
     }
+
+    public boolean hasEnoughProduct(Integer productId, Integer quantity) {
+        return productRepository.hasEnoughProduct(productId, quantity);
+    }
 }

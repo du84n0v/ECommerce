@@ -4,6 +4,8 @@ import com.ecommerce.dto.OrderDetailDto;
 import com.ecommerce.dto.OrderItemDto;
 import com.ecommerce.entity.OrdersItem;
 import com.ecommerce.entity.Orders;
+import com.ecommerce.entity.Product;
+import com.ecommerce.enums.OrderStatus;
 import com.ecommerce.exceptions.NotFoundOrdersException;
 import com.ecommerce.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrdersService {
@@ -41,5 +44,16 @@ public class OrdersService {
             result.add(new OrderItemDto(item.getProduct().getName(), item.getQuantity(), item.getPrice()));
         }
         return result;
+    }
+
+    public void createOrder(List<Product> products, Map<Integer, Integer> cart, Double totalSum, Integer profileId) {
+        Orders order = new Orders();
+        order.setProfileId(profileId);
+        order.setTotalSumma(totalSum);
+        order.setStatus(OrderStatus.NEW);
+        int orderId = ordersRepository.save(order);
+        for(Product product :products){
+            ordersItemService.createOrderItem(orderId, product.getId(), cart.get(product.getId()), product.getPrice());
+        }
     }
 }

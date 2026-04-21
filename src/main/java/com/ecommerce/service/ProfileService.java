@@ -4,11 +4,13 @@ import com.ecommerce.dto.OrderDetailDto;
 import com.ecommerce.entity.Orders;
 import com.ecommerce.entity.Product;
 import com.ecommerce.entity.Profile;
+import com.ecommerce.exceptions.InsufficientProductQuantity;
 import com.ecommerce.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -43,5 +45,17 @@ public class ProfileService {
 
     public List<Product> getProductsByIds(Set<Integer> ids) {
         return productService.getProductsByIds(ids);
+    }
+
+    public void createOrder(Map<Integer, Integer> cart, Integer profileId) {
+        List<Product> products = productService.getProductsByIds(cart.keySet());
+        double totalSum = 0d;
+        for(Product product :products){
+            if(cart.get(product.getId()) > product.getQuantity()){
+                throw new InsufficientProductQuantity("There is not enough product quantity in stock");
+            }
+            totalSum += (cart.get(product.getId()) * product.getPrice());
+        }
+        ordersService.createOrder(products, cart, totalSum, profileId);
     }
 }

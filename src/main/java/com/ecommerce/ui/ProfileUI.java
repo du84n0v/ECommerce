@@ -103,11 +103,24 @@ public class ProfileUI {
         while (true){
             switch (optionsMenu2()){
                 case 1-> deleteOrderFromCart();
-//                case 2-> createOrder(profile);
+                case 2-> createOrder(profile);
                 case 0-> {
                     return;
                 }
             }
+        }
+    }
+
+    private void createOrder(Profile profile) {
+        if(cart.isEmpty()){
+            System.out.println("There is nothing in cart. Please add some product to cart to order");
+            return ;
+        }
+        try{
+            profileController.createOrder(cart, profile.getId());
+        }
+        catch (Exception ee){
+            System.out.println(ee.getMessage());
         }
     }
 

@@ -1,0 +1,29 @@
+E-Commerce Order Processing System
+
+
+Quyidagi topshiriq oddiy CRUD darajasidan ancha yuqori bo‘lib, o‘quvchi uni bajarish orqali real backend tizim qanday ishlashini tushunishi kerak. Sizdan internet do‘konning (e-commerce) backend qismini yozish talab qilinadi. Bu tizimda foydalanuvchilar mavjud bo‘ladi, ular mahsulotlarni sotib olishlari mumkin va buning uchun buyurtma (order) yaratadilar. Loyihaning asosiy maqsadi — Spring Core va Hibernate yordamida to‘g‘ri arxitektura, biznes mantiq va transaction bilan ishlashni o‘rganishdir.
+
+Tizimda to‘rtta asosiy jadval (entity) bo‘ladi. Birinchi jadval — User. Bu jadvalda foydalanuvchilar saqlanadi va unda quyidagi maydonlar bo‘lishi kerak: id (unikal identifikator), name (foydalanuvchi ismi) va balance (foydalanuvchining hisobidagi pul miqdori). Foydalanuvchi tizimda buyurtma beradi va aynan shu balans orqali to‘lov amalga oshiradi.
+
+Ikkinchi jadval — Product. Bu yerda sotiladigan mahsulotlar saqlanadi. Har bir product uchun id, name, price va stockQuantity (omborda nechta borligi) maydonlari bo‘lishi kerak. Tizimda mahsulotlar kamayib boradi, ya’ni har bir sotuvdan keyin stockQuantity o‘zgaradi.
+
+Uchinchi jadval — Order. Bu jadval foydalanuvchilarning buyurtmalarini saqlaydi. Unda id, user (qaysi foydalanuvchiga tegishli ekanligi), totalAmount (umumiy summa) va status (buyurtma holati: NEW, PAID yoki CANCELLED) maydonlari bo‘lishi kerak. Har bir order yaratilganda dastlab NEW holatda bo‘ladi, to‘langandan keyin PAID ga o‘tadi yoki bekor qilinsa CANCELLED bo‘ladi.
+
+To‘rtinchi jadval — OrderItem. Bu eng muhim jadvallardan biri bo‘lib, order ichidagi mahsulotlarni saqlaydi. Unda id, order, product, quantity va price maydonlari bo‘ladi. Bu yerda price — mahsulotning aynan buyurtma berilgan paytdagi narxi bo‘lishi kerak (ya’ni keyinchalik product narxi o‘zgarsa ham order tarixida eski narx saqlanib qoladi).
+
+Endi tizimning asosiy ishlash logikasiga o‘tamiz. Birinchi vazifa — order yaratish. Foydalanuvchi bir nechta mahsulot tanlab buyurtma beradi. Sizga userId va productlar ro‘yxati (har biri uchun productId va quantity) keladi. Siz birinchi navbatda foydalanuvchi mavjudligini tekshirishingiz kerak. Keyin har bir mahsulotni tekshirasiz: mavjudmi yoki yo‘q, va yetarli miqdorda bormi. Agar biror mahsulot yetarli bo‘lmasa, butun jarayon to‘xtashi va xatolik qaytarilishi kerak. Agar hamma mahsulotlar mavjud va yetarli bo‘lsa, yangi Order yaratiladi, uning statusi NEW bo‘ladi. Har bir mahsulot uchun OrderItem yaratiladi va orderga bog‘lanadi. Shu bilan birga totalAmount hisoblanadi (har bir mahsulot narxi * quantity yig‘indisi). Oxirida order va uning itemlari bazaga saqlanadi.
+
+Keyingi va eng muhim vazifa — orderni to‘lash. Bu yerda siz transaction bilan ishlashingiz shart. Siz orderni topasiz va uning statusi NEW ekanligini tekshirasiz. Agar u allaqachon PAID yoki CANCELLED bo‘lsa, qayta ishlash mumkin emas. Keyin foydalanuvchining balansini tekshirasiz. Agar balans yetarli bo‘lmasa, xatolik qaytariladi. Agar yetarli bo‘lsa, quyidagi operatsiyalar bajariladi: foydalanuvchi balansidan pul yechiladi, har bir mahsulotning stockQuantity qiymati kamaytiriladi va order statusi PAID ga o‘zgartiriladi. Bu operatsiyalarning barchasi bitta transaction ichida bo‘lishi kerak. Agar shu jarayonda biror xatolik yuz bersa, barcha o‘zgarishlar bekor qilinishi (rollback) shart.
+
+Yana bir muhim vazifa — orderni bekor qilish (cancel). Agar order hali NEW holatda bo‘lsa, uni shunchaki CANCELLED holatiga o‘tkazish kifoya. Lekin agar order allaqachon PAID bo‘lsa, unda qo‘shimcha logika ishlaydi: foydalanuvchiga pul qaytariladi (balance ga qo‘shiladi), mahsulotlarning stockQuantity qiymati yana orttiriladi va order statusi CANCELLED bo‘ladi.
+
+Bundan tashqari, siz oddiy CRUD bilan cheklanib qolmasdan, murakkab querylar ham yozishingiz kerak. Masalan, eng ko‘p sotilgan 5 ta mahsulotni aniqlash, har bir foydalanuvchi nechta order qilganini hisoblash, eng ko‘p pul sarflagan foydalanuvchini topish va ma’lum bir order ichidagi barcha mahsulotlarni join orqali chiqarish kabi vazifalar bajarilishi kerak. Bu yerda siz JPQL yoki native SQL ishlatishingiz mumkin.
+
+Loyihani to‘g‘ri arxitektura asosida yozish ham muhim. Repository qatlami faqat ma’lumotlar bazasi bilan ishlaydi. Service qatlami barcha biznes logikani o‘z ichiga oladi. Controller esa tashqi so‘rovlarni qabul qiladi va Service bilan ishlaydi. Controller ichida hech qachon to‘g‘ridan-to‘g‘ri database operatsiyalari bo‘lmasligi kerak.
+
+API darajasida kamida quyidagi endpointlar bo‘lishi kerak: order yaratish (POST /orders), orderni to‘lash (POST /orders/{id}/pay), orderni bekor qilish (POST /orders/{id}/cancel) va orderni ko‘rish (GET /orders/{id}). Orderni ko‘rishda uning ichidagi barcha mahsulotlar ham qaytishi kerak.
+
+Qo‘shimcha ravishda kuchli o‘quvchilar uchun yana murakkab vazifalar beriladi. Masalan, optimistic locking qo‘shish orqali bir vaqtning o‘zida keladigan requestlar muammosini hal qilish, entity o‘rniga DTO ishlatish, custom exceptionlar yaratish (masalan, balans yetarli emas yoki mahsulot omborda yo‘q holatlari uchun) va tizimdagi asosiy jarayonlarni log qilish.
+
+Eng oxirgi va eng muhim muammo — bir xil order uchun bir vaqtning o‘zida ikki marta to‘lov bo‘lishining oldini olish. Agar ikkita request parallel kelsa, tizim noto‘g‘ri ishlashi mumkin. Siz shu holatni qanday boshqarishni o‘ylab ko‘rishingiz kerak.
+

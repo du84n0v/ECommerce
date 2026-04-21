@@ -15,4 +15,13 @@ public class OrdersItemService {
     public List<OrdersItem> getItemsByOrderId(int orderId) {
         return ordersItemRepository.getItemsByOrderId(orderId);
     }
+
+    public void createOrderItem(int orderId, Integer productId, Integer quantity, Double price) {
+        OrdersItem ordersItem = new OrdersItem();
+        ordersItem.setOrderId(orderId);
+        ordersItem.setProductId(productId);
+        ordersItem.setQuantity(quantity);
+        ordersItem.setPrice(price);
+        ordersItemRepository.save(ordersItem);
+    }
 }

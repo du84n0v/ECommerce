@@ -30,4 +30,14 @@ public class ProductRepository {
             return query.getResultList();
         }
     }
+
+    public boolean hasEnoughProduct(Integer productId, Integer quantity) {
+        try(Session session = factory.openSession()){
+            Query<Product> query = session.createQuery("FROM Product p WHERE p.id = :productId AND p.quantity >=:quantity", Product.class);
+            query.setParameter("productId", productId);
+            query.setParameter("quantity", quantity);
+            List<Product> result = query.getResultList();
+            return !result.isEmpty();
+        }
+    }
 }
