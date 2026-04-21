@@ -32,7 +32,7 @@ public class OrdersService {
     public OrderDetailDto getOrderDetailInformation(int orderId) {
         Orders order = ordersRepository.getOrderByOrderId(orderId);
         if(order == null){
-            throw new NotFoundOrdersException("Order is not found");
+            throw new OrderNotFoundException("Order is not found");
         }
         List<OrdersItem> items = ordersItemService.getItemsByOrderId(orderId);
 
