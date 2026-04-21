@@ -120,6 +120,7 @@ public class ProfileUI {
         }
         try{
             profileController.createOrder(cart, profile.getId());
+            System.out.println("Order successfully created");
             cart.clear();
         }
         catch (Exception ee){
@@ -224,11 +225,22 @@ public class ProfileUI {
         while (true){
             switch (actionMenu()){
                 case 1 -> buyOrder(profile);
-//                case 2 -> cancelOrder(profile);
+                case 2 -> cancelOrder(profile);
                 case 0 -> {
                     return;
                 }
             }
+        }
+    }
+
+    private void cancelOrder(Profile profile) {
+        System.out.println("Enter Order ID");
+        int orderId = scannerNum.nextInt();
+        try{
+            profileController.cancelOrder(orderId, profile);
+        }
+        catch (Exception ee){
+            System.out.println(ee.getMessage());
         }
     }
 

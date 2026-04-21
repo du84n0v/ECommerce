@@ -49,4 +49,8 @@ public class ProfileController {
     public void buyOrder(int orderId, Profile profile) {
         profileService.buyOrder(orderId, profile);
     }
+
+    public void cancelOrder(int orderId, Profile profile) {
+        profileService.cancelOrder(orderId, profile);
+    }
 }

@@ -73,4 +73,19 @@ public class ProfileService {
             System.out.println("Hmm, Something went wrong");
         }
     }
+
+    public void cancelOrder(int orderId, Profile profile) {
+        double totalSum = ordersService.cancelOrder(orderId, profile);
+        if(totalSum == 0){
+            System.out.println("Successfully cancelled");
+        }
+        else if(totalSum == -1){
+            System.out.println("Hmm, Something went wrong");
+        }
+        else {
+            if(profileRepository.fillBalance(profile.getId(), totalSum)){
+                System.out.println("Order successfully cancelled. Your money has been refunded");
+            }
+        }
+    }
 }

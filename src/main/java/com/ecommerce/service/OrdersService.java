@@ -71,7 +71,7 @@ public class OrdersService {
             throw new OrderAlreadyPaidException("This order already paid");
         }
         if(res == 2){
-            throw new OrderAlreadyCancelledException("This order cancelled");
+            throw new OrderAlreadyCancelledException("This order already cancelled");
         }
         Orders order = ordersRepository.getOrderByOrderId(orderId);
         if(order.getTotalSumma() > profile.getBalance()){
@@ -79,5 +79,27 @@ public class OrdersService {
         }
 
         return (ordersRepository.updateOrderStatus(orderId, OrderStatus.PAID) ? order.getTotalSumma() : -1d);
+    }
+
+    public double cancelOrder(int orderId, Profile profile) {
+        Orders order = ordersRepository.getOrderByOrderId(orderId);
+        if(order == null){
+            throw new OrderNotFoundException("Order not found");
+        }
+        if(!order.getProfileId().equals(profile.getId())){
+            throw new OrderNotFoundException("This order does not belong to this profile");
+        }
+        if(order.getStatus().equals(OrderStatus.CANCELLED)){
+            throw new OrderAlreadyCancelledException("This order already cancelled");
+        }
+        if(order.getStatus().equals(OrderStatus.NEW)){
+            if(ordersRepository.updateOrderStatus(orderId, OrderStatus.CANCELLED)) return 0;
+            else return -1;
+        }
+        if(order.getStatus().equals(OrderStatus.PAID)){
+            if(ordersRepository.updateOrderStatus(orderId, OrderStatus.CANCELLED)) return order.getTotalSumma();
+            else return -1;
+        }
+        return 0;
     }
 }
